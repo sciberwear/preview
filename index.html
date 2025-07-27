@@ -25,13 +25,13 @@
     }
 
     .zoomable {
-  touch-action: none;
-  user-select: none;
-  }
+      touch-action: none;
+      user-select: none;
+    }
 
-  .zoomable.dragging {
-  cursor: grabbing;
-  }
+    .zoomable.dragging {
+      cursor: grabbing;
+    }
 
     .container {
       display: flex;
@@ -70,11 +70,22 @@
       display: block;
     }
 
-    .video-wrapper,
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border: none;
+      overflow: hidden;
+      background: #e8e8e8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
     .image-wrapper {
       position: relative;
       width: 100%;
-      aspect-ratio: 16 / 9;
+      aspect-ratio: 1 / 1;
       border: 1.8px solid black;
       overflow: hidden;
       background: #fff;
@@ -117,8 +128,9 @@
       display: none;
     }
 
-    .video-wrapper:hover .sciberwear-progress,
-    .image-wrapper:hover .sciberwear-progress {
+    #front:hover .sciberwear-progress,
+    #back:hover .sciberwear-progress,
+    #additional:hover .sciberwear-progress {
       display: block;
     }
 
@@ -136,34 +148,6 @@
       background: #000;
     }
 
-    .play-btn,
-    .restart-btn {
-      background: #e8e8e8;
-      border: 1.8px solid #000;
-      padding: 6px 10px;
-      color: #000;
-      cursor: pointer;
-      font-family: 'SFMonoMedium';
-      position: absolute;
-      right: 10px;
-      z-index: 2;
-      display: none;
-    }
-
-    .play-btn:hover,
-    .restart-btn:hover {
-      background: #000;
-      color: #fff;
-    }
-
-    .play-btn { top: 10px; }
-    .restart-btn { top: 46px; }
-
-    .video-wrapper:hover .play-btn,
-    .video-wrapper:hover .restart-btn {
-      display: block;
-    }
-
     .control-bar {
       display: flex;
       justify-content: center;
@@ -173,45 +157,15 @@
     }
 
     .control-btn {
-      background: #b7b7b7;
+      background: transparent;
       border: none;
-      padding: 6px 10px;
-      color: #000;
+      padding: 0;
       cursor: pointer;
-      transition: all 0.2s ease;
     }
 
-    .control-btn:hover,
-    .control-btn.active {
-      background: #000;
-      color: #fff;
-    }
-
-    .playlist {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      width: 160px;
-      background: #e8e8e8;
-      border: 1.8px solid #000;
-      padding: 8px;
-      z-index: 3;
-      display: none;
-    }
-
-    .playlist-item {
-      padding: 6px 4px;
-      cursor: pointer;
-      border-bottom: 1px solid #ccc;
-    }
-
-    .playlist-item:hover,
-    .playlist-item.active {
-      background: #b1b4b5;
-    }
-
-    #full .video-wrapper:hover .playlist {
-      display: block;
+    .control-btn img {
+      width: 12px;
+      height: 12px;
     }
   </style>
 </head>
@@ -224,31 +178,28 @@
       <button class="nav-btn" onclick="switchTab('additional')">Additional</button>
     </div>
 
-    <!-- Full -->
     <div id="full" class="section active">
       <div class="video-wrapper">
-        <div class="playlist">
-          <div class="playlist-item" onclick="seekTo('fullVideo', 0, this)">Intro – 0:00</div>
-          <div class="playlist-item" onclick="seekTo('fullVideo', 30, this)">Scene 1 – 0:30</div>
-          <div class="playlist-item" onclick="seekTo('fullVideo', 60, this)">Scene 2 – 1:00</div>
-        </div>
-        <video id="fullVideo" src="https://cdn.jsdelivr.net/gh/sciberwear/assets@main/clo3d-fashion-show-1080.mp4" muted autoplay loop></video>
-        <button class="play-btn" onclick="togglePlay('fullVideo', this)">Pause</button>
-        <button class="restart-btn" onclick="restartVideo('fullVideo')">Restart</button>
-        <input type="range" id="fullProgress" class="sciberwear-progress" value="0" min="0" max="100" step="0.1">
+        <video id="fullVideo" muted autoplay loop playsinline>
+          <source src="https://dl.dropboxusercontent.com/scl/fi/zxr39re6hvcnqxf4wuyus/Rotate-Base-Footage-Sample.mp4?rlkey=4hl7nmoy04wv9aoirigza032q&raw=1" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
       </div>
     </div>
 
-    <!-- Shared image layout: Front / Back / Additional -->
     <div id="front" class="section">
       <div class="image-wrapper">
         <img id="frontImage" class="zoomable" src="" />
         <input type="range" id="frontZoom" class="sciberwear-progress" min="100" max="300" value="100">
       </div>
       <div class="control-bar">
-        <button class="control-btn" onclick="prevImage('front')">Previous</button>
+        <button class="control-btn" onclick="prevImage('front')">
+          <img src="https://dl.dropboxusercontent.com/scl/fi/k9qqmqkj4ckxf0b4wu4jz/LeftArrow.svg?rlkey=8m32xp3epl0bkixzs5q1damek&raw=1" alt="Previous">
+        </button>
         <span id="frontIndex">1</span>
-        <button class="control-btn" onclick="nextImage('front')">Next</button>
+        <button class="control-btn" onclick="nextImage('front')">
+          <img src="https://dl.dropboxusercontent.com/scl/fi/q9faczjdm096f0vo1m5ni/RightArrow.svg?rlkey=zmhmba3lj6neb12sieu1imvmo&raw=1" alt="Next">
+        </button>
       </div>
     </div>
 
@@ -258,9 +209,13 @@
         <input type="range" id="backZoom" class="sciberwear-progress" min="100" max="300" value="100">
       </div>
       <div class="control-bar">
-        <button class="control-btn" onclick="prevImage('back')">Previous</button>
+        <button class="control-btn" onclick="prevImage('back')">
+          <img src="https://dl.dropboxusercontent.com/scl/fi/k9qqmqkj4ckxf0b4wu4jz/LeftArrow.svg?rlkey=8m32xp3epl0bkixzs5q1damek&raw=1" alt="Previous">
+        </button>
         <span id="backIndex">1</span>
-        <button class="control-btn" onclick="nextImage('back')">Next</button>
+        <button class="control-btn" onclick="nextImage('back')">
+          <img src="https://dl.dropboxusercontent.com/scl/fi/q9faczjdm096f0vo1m5ni/RightArrow.svg?rlkey=zmhmba3lj6neb12sieu1imvmo&raw=1" alt="Next">
+        </button>
       </div>
     </div>
 
@@ -270,219 +225,187 @@
         <input type="range" id="additionalZoom" class="sciberwear-progress" min="100" max="300" value="100">
       </div>
       <div class="control-bar">
-        <button class="control-btn" onclick="prevImage('additional')">Previous</button>
+        <button class="control-btn" onclick="prevImage('additional')">
+          <img src="https://dl.dropboxusercontent.com/scl/fi/k9qqmqkj4ckxf0b4wu4jz/LeftArrow.svg?rlkey=8m32xp3epl0bkixzs5q1damek&raw=1" alt="Previous">
+        </button>
         <span id="additionalIndex">1</span>
-        <button class="control-btn" onclick="nextImage('additional')">Next</button>
+        <button class="control-btn" onclick="nextImage('additional')">
+          <img src="https://dl.dropboxusercontent.com/scl/fi/q9faczjdm096f0vo1m5ni/RightArrow.svg?rlkey=zmhmba3lj6neb12sieu1imvmo&raw=1" alt="Next">
+        </button>
       </div>
     </div>
   </div>
 
   <script>
-  const tabs = document.querySelectorAll('.nav-btn');
-  const sections = document.querySelectorAll('.section');
-  const fullVideo = document.getElementById('fullVideo');
+    const tabs = document.querySelectorAll('.nav-btn');
+    const sections = document.querySelectorAll('.section');
+    const fullVideo = document.getElementById('fullVideo');
+    let currentTab = 'full';
 
-  let currentTab = 'full';
-
-  function switchTab(id) {
-    if (id !== 'full') fullVideo.pause();
-    tabs.forEach(btn => btn.classList.remove('active'));
-    sections.forEach(sec => sec.classList.remove('active'));
-    document.querySelector(`[onclick*="${id}"]`).classList.add('active');
-    document.getElementById(id).classList.add('active');
-
-    if (id === 'full') {
-      fullVideo.currentTime = 0;
-      fullVideo.play();
-    }
-
-    currentTab = id;
-  }
-
-  function togglePlay(id, button) {
-    const video = document.getElementById(id);
-    if (video.paused) {
-      video.play();
-      button.textContent = 'Pause';
-    } else {
-      video.pause();
-      button.textContent = 'Play';
-    }
-  }
-
-  function restartVideo(id) {
-    const video = document.getElementById(id);
-    video.currentTime = 0;
-    video.play();
-  }
-
-  function setupProgress(videoId, progressId) {
-    const video = document.getElementById(videoId);
-    const progress = document.getElementById(progressId);
-    video.addEventListener('timeupdate', () => {
-      const percent = (video.currentTime / video.duration) * 100;
-      progress.value = percent;
-      progress.style.setProperty('--progress', `${percent}%`);
-    });
-    progress.addEventListener('input', () => {
-      video.currentTime = (progress.value / 100) * video.duration;
-    });
-  }
-
-  setupProgress('fullVideo', 'fullProgress');
-
-  function seekTo(videoId, time, el) {
-    const video = document.getElementById(videoId);
-    video.currentTime = time;
-    video.play();
-    document.querySelectorAll(`#${videoId}`).forEach(i => i.classList.remove('active'));
-    el.classList.add('active');
-  }
-
-  const imageSources = {
-    front: ["image1.svg", "image2.svg", "image3.svg"],
-    back: ["image4.svg", "image5.svg"],
-    additional: ["image6.svg", "image7.svg"]
-  };
-
-  const indices = { front: 0, back: 0, additional: 0 };
-
-  function updateImage(tab) {
-    const img = document.getElementById(`${tab}Image`);
-    const indexSpan = document.getElementById(`${tab}Index`);
-    img.src = `https://raw.githubusercontent.com/sciberwear/sciberwear-slideshow/refs/heads/main/Image/${imageSources[tab][indices[tab]]}`;
-    indexSpan.textContent = indices[tab] + 1;
-  }
-
-  function nextImage(tab) {
-    indices[tab] = (indices[tab] + 1) % imageSources[tab].length;
-    updateImage(tab);
-  }
-
-  function prevImage(tab) {
-    indices[tab] = (indices[tab] - 1 + imageSources[tab].length) % imageSources[tab].length;
-    updateImage(tab);
-  }
-
-  ['front', 'back', 'additional'].forEach(tab => {
-    updateImage(tab);
-    const zoomSlider = document.getElementById(`${tab}Zoom`);
-    const image = document.getElementById(`${tab}Image`);
-    let isDragging = false, startX = 0, startY = 0, lastX = 0, lastY = 0;
-    let lastTouchDistance = 0;
-    let lastTap = 0;
-
-    function applyTransform(scale = 1, dx = 0, dy = 0) {
-      const wrapper = image.parentElement.getBoundingClientRect();
-      const imgSize = {
-        w: wrapper.width * scale,
-        h: wrapper.height * scale
-      };
-      const bounds = {
-        maxX: (imgSize.w - wrapper.width) / 2,
-        maxY: (imgSize.h - wrapper.height) / 2
-      };
-      dx = Math.max(-bounds.maxX, Math.min(bounds.maxX, dx));
-      dy = Math.max(-bounds.maxY, Math.min(bounds.maxY, dy));
-      image.style.transform = `scale(${scale}) translate(${dx}px, ${dy}px)`;
-      return { dx, dy };
-    }
-
-    zoomSlider.addEventListener('input', () => {
-      const zoom = zoomSlider.value / 100;
-      if (zoom === 1) {
-        lastX = 0;
-        lastY = 0;
-        image.style.transform = `scale(1)`;
-        zoomSlider.style.setProperty('--progress', `0%`);
-      } else {
-        const result = applyTransform(zoom, lastX, lastY);
-        lastX = result.dx;
-        lastY = result.dy;
-        zoomSlider.style.setProperty('--progress', `${zoomSlider.value}%`);
+    function switchTab(id) {
+      if (id !== 'full') fullVideo.pause();
+      tabs.forEach(btn => btn.classList.remove('active'));
+      sections.forEach(sec => sec.classList.remove('active'));
+      document.querySelector(`[onclick*="${id}"]`).classList.add('active');
+      document.getElementById(id).classList.add('active');
+      if (id === 'full') {
+        fullVideo.currentTime = 0;
+        fullVideo.play();
       }
-    });
+      currentTab = id;
+    }
 
-    image.addEventListener('mousedown', (e) => {
-      if (zoomSlider.value == 100) return;
-      isDragging = true;
-      startX = e.clientX;
-      startY = e.clientY;
-      image.classList.add('dragging');
-    });
+    const imageSources = {
+      front: [
+        "https://raw.githubusercontent.com/sciberwear/assets/5c4d01716676dc41cc5440c3561d6d843bc988fe/popup-image-placeholder/image2_sq.svg",
+        "https://raw.githubusercontent.com/sciberwear/assets/5c4d01716676dc41cc5440c3561d6d843bc988fe/popup-image-placeholder/image3_sq.svg"
+      ],
+      back: [
+        "https://raw.githubusercontent.com/sciberwear/assets/5c4d01716676dc41cc5440c3561d6d843bc988fe/popup-image-placeholder/image4_sq.svg",
+        "https://raw.githubusercontent.com/sciberwear/assets/5c4d01716676dc41cc5440c3561d6d843bc988fe/popup-image-placeholder/image5_sq.svg"
+      ],
+      additional: [
+        "https://raw.githubusercontent.com/sciberwear/assets/5c4d01716676dc41cc5440c3561d6d843bc988fe/popup-image-placeholder/image6_sq.svg",
+        "https://raw.githubusercontent.com/sciberwear/assets/5c4d01716676dc41cc5440c3561d6d843bc988fe/popup-image-placeholder/image7_sq.svg"
+      ]
+    };
 
-    document.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      e.preventDefault();
-      const dx = e.clientX - startX + lastX;
-      const dy = e.clientY - startY + lastY;
-      const zoom = zoomSlider.value / 100;
-      const result = applyTransform(zoom, dx, dy);
-    });
+    const indices = { front: 0, back: 0, additional: 0 };
 
-    document.addEventListener('mouseup', (e) => {
-      if (!isDragging) return;
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      lastX += dx;
-      lastY += dy;
-      isDragging = false;
-      image.classList.remove('dragging');
-    });
+    function updateImage(tab) {
+      const img = document.getElementById(`${tab}Image`);
+      const indexSpan = document.getElementById(`${tab}Index`);
+      img.src = imageSources[tab][indices[tab]];
+      indexSpan.textContent = indices[tab] + 1;
+    }
 
-    // Touch support
-    image.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 1) {
-        if (zoomSlider.value == 100) return;
-        isDragging = true;
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-        image.classList.add('dragging');
+    function nextImage(tab) {
+      indices[tab] = (indices[tab] + 1) % imageSources[tab].length;
+      updateImage(tab);
+    }
 
-        const now = Date.now();
-        if (now - lastTap < 300) {
-          // double tap
+    function prevImage(tab) {
+      indices[tab] = (indices[tab] - 1 + imageSources[tab].length) % imageSources[tab].length;
+      updateImage(tab);
+    }
+
+    ['front', 'back', 'additional'].forEach(tab => {
+      updateImage(tab);
+      const zoomSlider = document.getElementById(`${tab}Zoom`);
+      const image = document.getElementById(`${tab}Image`);
+      let isDragging = false, startX = 0, startY = 0, lastX = 0, lastY = 0;
+      let lastTouchDistance = 0;
+      let lastTap = 0;
+
+      function applyTransform(scale = 1, dx = 0, dy = 0) {
+        const wrapper = image.parentElement.getBoundingClientRect();
+        const imgSize = {
+          w: wrapper.width * scale,
+          h: wrapper.height * scale
+        };
+        const bounds = {
+          maxX: (imgSize.w - wrapper.width) / 2,
+          maxY: (imgSize.h - wrapper.height) / 2
+        };
+        dx = Math.max(-bounds.maxX, Math.min(bounds.maxX, dx));
+        dy = Math.max(-bounds.maxY, Math.min(bounds.maxY, dy));
+        image.style.transform = `scale(${scale}) translate(${dx}px, ${dy}px)`;
+        return { dx, dy };
+      }
+
+      zoomSlider.addEventListener('input', () => {
+        const zoom = zoomSlider.value / 100;
+        if (zoom === 1) {
           lastX = 0;
           lastY = 0;
-          zoomSlider.value = 100;
-          zoomSlider.dispatchEvent(new Event('input'));
+          image.style.transform = `scale(1)`;
+          zoomSlider.style.setProperty('--progress', `0%`);
+        } else {
+          const result = applyTransform(zoom, lastX, lastY);
+          lastX = result.dx;
+          lastY = result.dy;
+          zoomSlider.style.setProperty('--progress', `${zoomSlider.value}%`);
         }
-        lastTap = now;
-      } else if (e.touches.length === 2) {
-        const dx = e.touches[0].clientX - e.touches[1].clientX;
-        const dy = e.touches[0].clientY - e.touches[1].clientY;
-        lastTouchDistance = Math.sqrt(dx * dx + dy * dy);
-      }
-    });
+      });
 
-    image.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 1 && isDragging) {
-        const dx = e.touches[0].clientX - startX + lastX;
-        const dy = e.touches[0].clientY - startY + lastY;
+      image.addEventListener('mousedown', (e) => {
+        if (zoomSlider.value == 100) return;
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        image.classList.add('dragging');
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const dx = e.clientX - startX + lastX;
+        const dy = e.clientY - startY + lastY;
         const zoom = zoomSlider.value / 100;
-        applyTransform(zoom, dx, dy);
-      } else if (e.touches.length === 2) {
-        const dx = e.touches[0].clientX - e.touches[1].clientX;
-        const dy = e.touches[0].clientY - e.touches[1].clientY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const delta = distance - lastTouchDistance;
-        lastTouchDistance = distance;
-        let zoom = zoomSlider.valueAsNumber + delta * 0.2;
-        zoom = Math.max(100, Math.min(300, zoom));
-        zoomSlider.value = zoom;
-        zoomSlider.dispatchEvent(new Event('input'));
-      }
-    });
+        const result = applyTransform(zoom, dx, dy);
+      });
 
-    image.addEventListener('touchend', (e) => {
-      if (e.touches.length === 0) {
-        lastX += e.changedTouches[0].clientX - startX;
-        lastY += e.changedTouches[0].clientY - startY;
+      document.addEventListener('mouseup', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        lastX += dx;
+        lastY += dy;
         isDragging = false;
         image.classList.remove('dragging');
-      }
+      });
+
+      image.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          if (zoomSlider.value == 100) return;
+          isDragging = true;
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+          image.classList.add('dragging');
+
+          const now = Date.now();
+          if (now - lastTap < 300) {
+            lastX = 0;
+            lastY = 0;
+            zoomSlider.value = 100;
+            zoomSlider.dispatchEvent(new Event('input'));
+          }
+          lastTap = now;
+        } else if (e.touches.length === 2) {
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          lastTouchDistance = Math.sqrt(dx * dx + dy * dy);
+        }
+      });
+
+      image.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 1 && isDragging) {
+          const dx = e.touches[0].clientX - startX + lastX;
+          const dy = e.touches[0].clientY - startY + lastY;
+          const zoom = zoomSlider.value / 100;
+          applyTransform(zoom, dx, dy);
+        } else if (e.touches.length === 2) {
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const delta = distance - lastTouchDistance;
+          lastTouchDistance = distance;
+          let zoom = zoomSlider.valueAsNumber + delta * 0.2;
+          zoom = Math.max(100, Math.min(300, zoom));
+          zoomSlider.value = zoom;
+          zoomSlider.dispatchEvent(new Event('input'));
+        }
+      });
+
+      image.addEventListener('touchend', (e) => {
+        if (e.touches.length === 0) {
+          lastX += e.changedTouches[0].clientX - startX;
+          lastY += e.changedTouches[0].clientY - startY;
+          isDragging = false;
+          image.classList.remove('dragging');
+        }
+      });
     });
-  });
-</script>
+  </script>
 </body>
 </html>
